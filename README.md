@@ -31,6 +31,29 @@ It is state less by default means ones a container is closed it does not retain 
    in this example using pwd we are taking the path of working directory then maping test folder to /app/test folder inside docker container you can view these folder using 
    `ls` inside docker container
 
+8. To preserve the state of a docker container on each time we run it we make a Dockerfile (yes it has no extention) 
+   ```
+   FROM python:3.13.11-slim
+   COPY --from=ghcr.io/astral-sh/uv:latest /uv /bin/
+
+   WORKDIR /app
+
+   ENV PATH="/app/.venv/bin:$PATH"
+
+   COPY pyproject.toml .python-version uv.lock ./
+
+   RUN uv sync --locked
+
+   COPY pipeline.py pipeline.py
+
+   ENTRYPOINT [ "python", "pipeline.py" ]
+   ```
+   Explenation: 
+   * FROM: Every docker file starts from FROM it tells docker what is the base image for this containe
+   * COPY: It tells docker to copy some file. Here the first copy is coping uv image so we can use that too.
+   * WORKDIR: It sets working directory inside docker
+   * RUN: It runs and command 
+   * ENTRYPOINT: Default command to run
 
 
 ## Data Pipeline
